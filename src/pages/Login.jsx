@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {signInWithEmailAndPassword,setPersistence,browserLocalPersistence}from "firebase/auth";
 import { auth } from "../services/firebase";
 import Swal from "sweetalert2";
+import { getUserData } from "../services/userService"; 
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,25 +13,33 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     try {
       await setPersistence(auth, browserLocalPersistence);
       const cred = await signInWithEmailAndPassword(auth, email, password);
 
+      // Verificación de correo
       if (!cred.user.emailVerified) {
-        await auth.signOut();
-        return Swal.fire(
-          "Correo no verificado",
-          "Debes verificar tu correo electrónico antes de iniciar sesión.",
+        await signOut(auth); // <- Mejora: evitar sesión sin verificar
+        Swal.fire(
+          "Verificación requerida",
+          "Debes verificar tu correo antes de ingresar.",
           "warning"
         );
+        return;
       }
 
+      // Obtener datos del usuario desde Firestore
+      const datos = await getUserData(cred.user.uid);
+
       Swal.fire("Bienvenido", "Has iniciado sesión correctamente", "success");
-      navigate("/home");
+
+      // Redirección según tipo
+      if (datos.tipo === "admin") navigate("/admin/dashboard");
+      else if (datos.tipo === "cliente") navigate("/cliente/dashboard");
     } catch (error) {
-      console.error("Error de login:", error);
-      Swal.fire("Error", "Credenciales incorrectas o fallo de red", "error");
+      console.error("Error al iniciar sesión:", error);
+      Swal.fire("Error", "Credenciales incorrectas", "error");
     }
   };
 

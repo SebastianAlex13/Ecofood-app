@@ -1,0 +1,6 @@
+
+<Route path="/admin/productos" element={
+<ProtectedByRole allowed={["admin"]}>
+    <AdminProductos />
+</ProtectedByRole>
+} />

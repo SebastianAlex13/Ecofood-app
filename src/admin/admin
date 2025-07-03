@@ -1,0 +1,9 @@
+<Route path="/admin" element={
+<ProtectedByRole allowed={["admin"]}>
+<AdminLayout />
+</ProtectedByRole>
+}>
+<Route path="dashboard" element={<AdminDashboard />} />
+<Route path="productos" element={<AdminProductos />} />
+<Route path="usuarios" element={<AdminUsuarios />} />
+</Route>
