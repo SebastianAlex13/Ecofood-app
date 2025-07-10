@@ -1,6 +1,11 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
+// Empresa
+import PerfilEmpresa from "../pages/empresa/PerfilEmpresa";
+import ProductosEmpresa from "../pages/empresa/ProductosEmpresa";
+import EmpresaLayout from "../layouts/EmpresaLayout";
+
 // Páginas públicas
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -37,7 +42,7 @@ export default function AppRouter() {
       <Route path="/registeradmin" element={<RegisterAdmin />} />
       <Route path="/recuperar" element={<RecuperarContraseña />} />
 
-
+      {/* General */}
       <Route
         path="/home"
         element={
@@ -59,23 +64,35 @@ export default function AppRouter() {
         <Route path="dashboard" element={<ClienteDashboard />} />
       </Route>
 
+      {/* Empresa */}
+      <Route
+        path="/empresa"
+        element={
+          <ProtectedByRole allowed={["empresa"]}>
+            <EmpresaLayout />
+          </ProtectedByRole>
+        }
+      >
+        <Route path="perfil" element={<PerfilEmpresa />} />
+        <Route path="productos" element={<ProductosEmpresa />} />
+      </Route>
+
       {/* Admin */}
       <Route
-  path="/admin"
-  element={
-    <ProtectedByRole allowed={["admin"]}>
-      <AdminLayout />
-    </ProtectedByRole>
-  }
->
-  <Route path="dashboard" element={<AdminDashboard />} />
-  <Route path="productos" element={<AdminProductos />} />
-  <Route path="usuarios" element={<AdminUsuarios />} />
-  <Route path="clientes" element={<AdminClientes />} />
-  <Route path="administradores" element={<AdminAdministradores />} />
-  <Route path="empresas" element={<AdminEmpresas />} />
-</Route>
-
+        path="/admin"
+        element={
+          <ProtectedByRole allowed={["admin"]}>
+            <AdminLayout />
+          </ProtectedByRole>
+        }
+      >
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="productos" element={<AdminProductos />} />
+        <Route path="usuarios" element={<AdminUsuarios />} />
+        <Route path="clientes" element={<AdminClientes />} />
+        <Route path="administradores" element={<AdminAdministradores />} />
+        <Route path="empresas" element={<AdminEmpresas />} />
+      </Route>
     </Routes>
   );
 }
